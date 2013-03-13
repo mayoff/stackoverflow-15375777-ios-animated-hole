@@ -17,6 +17,10 @@
     UIView *holeView;
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    return YES;
+}
+
 - (void)loadView {
     UIView *const rootView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     rootView.backgroundColor = [UIColor whiteColor];
