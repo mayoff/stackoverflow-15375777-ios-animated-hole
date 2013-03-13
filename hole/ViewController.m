@@ -45,10 +45,16 @@
     CGRect const bounds = self.view.bounds;
     holeView.center = CGPointMake(CGRectGetMidX(bounds), 0);
 
+    // Defer this because `viewDidLayoutSubviews` can happen inside an
+    // autorotation animation block, which overrides the duration I set.
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:2 delay:0 options:UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse animations:^{
-            holeView.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMaxY(bounds));
-        } completion:nil];
+        [UIView animateWithDuration:2 delay:0
+            options:UIViewAnimationOptionRepeat
+                | UIViewAnimationOptionAutoreverse
+            animations:^{
+                holeView.center = CGPointMake(CGRectGetMidX(bounds),
+                    CGRectGetMaxY(bounds));
+            } completion:nil];
     });
 }
 
@@ -67,7 +73,10 @@
     maskLayer.fillColor = [UIColor blackColor].CGColor;
 
     static CGFloat const kRadius = 100;
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(CGRectGetMidX(bounds) - kRadius, CGRectGetMidY(bounds) - kRadius, 2 * kRadius, 2 * kRadius)];
+    CGRect const circleRect = CGRectMake(CGRectGetMidX(bounds) - kRadius,
+        CGRectGetMidY(bounds) - kRadius,
+        2 * kRadius, 2 * kRadius);
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:circleRect];
     [path appendPath:[UIBezierPath bezierPathWithRect:bounds]];
     maskLayer.path = path.CGPath;
     maskLayer.fillRule = kCAFillRuleEvenOdd;
